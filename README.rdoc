@@ -1,5 +1,6 @@
 == JQuery Tree Map
-A simple jQuery plugin to create a tree map view of json data.
+
+A simple jQuery plugin to create a tree map view of json data. View a {live sample}[http://htmlpreview.github.io/?https://github.com/colinbate/jquery-treemap/blob/master/index.html]
 
 == How to use
 
