@@ -44,7 +44,7 @@
         this.ready = function () {
         };
         this.smallestFontSize = 15;
-        this.startingFontSize = '24px';
+        this.startingFontSize = 24;
         this.centerLabelVertically = true;
 
         $.extend(this, options);
@@ -67,7 +67,8 @@
             var node = nodeList[i];
             var nodeBounds = node.bounds;
 
-            var $box = $('<div id=' + node.id + '></div>');
+            var boxId = node.id || 'treemap-node-' + i;
+            var $box = $('<div id=' + boxId + '></div>');
             $box.css($.extend(nodeBounds.style(), {
                 'position': 'absolute'
             }));
@@ -99,7 +100,7 @@
                 'display': 'inline',
                 'position': 'relative',
                 'text-align': 'center',
-                'font-size': this.startingFontSize
+                'font-size': this.startingFontSize + 'px'
             });
             $box.append($content);
 

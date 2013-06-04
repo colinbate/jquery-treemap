@@ -12,9 +12,10 @@ A simple jQuery plugin to create a tree map view of json data.
     $('div#someId').treemap(
     [
         {
-        label: 'Label of treemap node',
-        value: 100, // A number that defines the size of the node into the tree map.
-        data: 'some arbitrary data. Can be a string'
+            label: 'Label of treemap node',
+            value: 100, // A number that defines the size of the node into the tree map.
+            id: 'unique-id' // Will be used as the ID of the div, defaults to treemap-node-#
+            // Anything else can be added and will be available to the callback functions below
         },
         {...} // This is a list
     ]);
@@ -26,36 +27,50 @@ You can pass a second parameter containing some options to customize the looking
     $('div#someId).treemap(
         [],
         {
-            backgroundColor: function(node){
-                //node is an item of the list passed as the first arg of this fuction;
-                return 'red'; // You should return a css valid color string.
+            backgroundColor: function ($box, node) {
+                // node is the item from the data list being rendered
+                return 'red'; // You should return a css valid color string
             },
-            color: function(node){
-                //node is an item of the list passed as the first arg of this fuction;
-                return 'red'; // You should return a css valid color string.
+            color: function ($box, node) {
+                // node is the item from the data list being rendered
+                return 'red'; // You should return a css valid color string
             },
-            nodeClass: function(node){
-                //node is an item of the list passed as the first arg of this fuction;
-                return 'my-class'; // You should return your customized css class here.
-            }
+            nodeClass: function ($box, node) {
+                // node is the item from the data list being rendered
+                return 'my-class'; // You should return your customized css class here
+            },
+            paintCallback: function ($label, node) {
+                // $label is the label div (to add any extra formatting)
+                // node is the item from the data list being rendered
+                $label.css({'text-align': 'left'});
+            },
+            smallestFontSize: 15, // If your label doesn't fit below this text size, it isn't added
+            startingFontSize: 24, // Labels start this size (in px) and may be smaller to accommodate text
+            centerLabelVertically: true // Determine whether the labels should be centered vertically within the box
         }
     );
 
 4. Customizing the events
 
-You can alsa pass functions to deal with events related to mouse.
+You can alsa pass functions to deal with events (mostly related to the mouse).
 
     $('div#someId).treemap(
         [],
         {
-            click: function(node, event){
+            click: function (node, event) {
                 // click on a node
             },
-            mouseenter: function(node, event){
+            mouseenter: function (node, event) {
                 // mouse enter a node
             },
-            mouseleave: function(node){
-                //mouse leaves a node
+            mouseleave: function (node, event) {
+                // mouse leaves a node
+            },
+            mousemove: function (node, event) {
+                // mouse moves in a node
+            },
+            ready: function () {
+                // Called when the tree is finished drawing
             }
         }
     );
