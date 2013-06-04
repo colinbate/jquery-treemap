@@ -1,4 +1,4 @@
-(function($) {
+(function ($) {
 
     function Rectangle(x, y, width, height) {
         this.x = x;
@@ -8,18 +8,18 @@
         this.margin = 4;
     }
 
-    Rectangle.prototype.style = function() {
+    Rectangle.prototype.style = function () {
         return {
             top: this.y + 'px',
             left: this.x + 'px',
             width: (this.width - this.margin) + "px",
             height: (this.height - this.margin) + "px"
         };
-    }
+    };
 
-    Rectangle.prototype.isWide = function() {
+    Rectangle.prototype.isWide = function () {
         return this.width > this.height;
-    }
+    };
 
     function TreeMap($div, options) {
         var options = options || {};
@@ -28,34 +28,36 @@
         $div.css('position', 'relative');
         this.rectangle = new Rectangle(0, 0, $div.width(), $div.height());
 
-        this.nodeClass = function() {
+        this.nodeClass = function () {
             return '';
-        }
-        this.click = function() {
         };
-        this.mouseenter = function() {
+        this.click = function () {
         };
-        this.mouseleave = function() {
+        this.mouseenter = function () {
         };
-        this.mousemove = function() {
+        this.mouseleave = function () {
         };
-        this.paintCallback = function() {
+        this.mousemove = function () {
         };
-        this.ready = function() {
+        this.paintCallback = function () {
+        };
+        this.ready = function () {
         };
 
         $.extend(this, options);
 
-        this.setNodeColors = function($box) {
-            if (this.backgroundColor) $box.css('background-color', this.backgroundColor($box));
-            if (this.color) $box.css('color', this.color($box));
-        }
+        this.setNodeColors = function ($box) {
+            if (this.backgroundColor)
+                $box.css('background-color', this.backgroundColor($box));
+            if (this.color)
+                $box.css('color', this.color($box));
+        };
     }
 
     TreeMap.SIDE_MARGIN = 20;
     TreeMap.TOP_MARGIN = 20;
 
-    TreeMap.prototype.paint = function(nodeList) {
+    TreeMap.prototype.paint = function (nodeList) {
         var nodeList = this.squarify(nodeList, this.rectangle);
 
         for (var i = 0; i < nodeList.length; i++) {
@@ -64,7 +66,7 @@
 
             var $box = $('<div id=' + node.id + '></div>');
             $box.css($.extend(nodeBounds.style(), {
-                'position' : 'absolute'
+                'position': 'absolute'
             }));
 
             this.setNodeColors($box);
@@ -72,16 +74,16 @@
             $box.addClass('treemap-node');
 
             var self = this;
-            $box.bind('click', node, function(e) {
+            $box.bind('click', node, function (e) {
                 self.click(e.data, e);
             });
-            $box.bind('mouseenter', node, function(e) {
+            $box.bind('mouseenter', node, function (e) {
                 self.mouseenter(e.data, e);
             });
-            $box.bind('mouseleave', node, function(e) {
+            $box.bind('mouseleave', node, function (e) {
                 self.mouseleave(e.data, e);
             });
-            $box.bind('mousemove', node, function(e) {
+            $box.bind('mousemove', node, function (e) {
                 self.mousemove(e.data, e);
             });
 
@@ -104,10 +106,10 @@
 
         }
         this.ready();
-    }
+    };
 
-    TreeMap.prototype.fitLabelFontSize = function($content, node) {
-        var nodeBounds = node.bounds
+    TreeMap.prototype.fitLabelFontSize = function ($content, node) {
+        var nodeBounds = node.bounds;
         while ($content.height() + TreeMap.TOP_MARGIN > nodeBounds.height || $content.width() + TreeMap.SIDE_MARGIN > nodeBounds.width) {
             var fontSize = parseFloat($content.css('font-size')) - 3;
             if (fontSize < 15) {
@@ -118,13 +120,13 @@
         }
         $content.css('display', 'block');
         this.paintCallback($content, node);
-    }
+    };
 
     TreeMap.HORIZONTAL = 1;
     TreeMap.VERTICAL = 2;
 
-    TreeMap.prototype.squarify = function(nodeList, rectangle) {
-        nodeList.sort(function(a, b) {
+    TreeMap.prototype.squarify = function (nodeList, rectangle) {
+        nodeList.sort(function (a, b) {
             return b.value - a.value;
         });
         this.divideDisplayArea(nodeList, rectangle);
@@ -132,9 +134,10 @@
         return nodeList;
     };
 
-    TreeMap.prototype.divideDisplayArea = function(nodeList, destRectangle) {
+    TreeMap.prototype.divideDisplayArea = function (nodeList, destRectangle) {
         // Check for boundary conditions
-        if (nodeList.length === 0) return;
+        if (nodeList.length === 0)
+            return;
 
         if (nodeList.length == 1) {
             nodeList[0].bounds = destRectangle;
@@ -147,8 +150,8 @@
         var orientation;
 
         var leftSum = this.sumValues(halves.left),
-                rightSum = this.sumValues(halves.right),
-                totalSum = leftSum + rightSum;
+            rightSum = this.sumValues(halves.right),
+            totalSum = leftSum + rightSum;
 
         if (leftSum + rightSum <= 0) {
             midPoint = 0;
@@ -157,10 +160,10 @@
 
             if (destRectangle.isWide()) {
                 orientation = TreeMap.HORIZONTAL;
-                midPoint = Math.round(( leftSum * destRectangle.width ) / totalSum);
+                midPoint = Math.round((leftSum * destRectangle.width) / totalSum);
             } else {
                 orientation = TreeMap.VERTICAL;
-                midPoint = Math.round(( leftSum * destRectangle.height ) / totalSum);
+                midPoint = Math.round((leftSum * destRectangle.height) / totalSum);
             }
         }
 
@@ -173,13 +176,13 @@
         }
     };
 
-    TreeMap.prototype.splitFairly = function(nodeList) {
+    TreeMap.prototype.splitFairly = function (nodeList) {
         var halfValue = this.sumValues(nodeList) / 2;
         var accValue = 0;
         var length = nodeList.length;
 
         for (var midPoint = 0; midPoint < length; midPoint++) {
-            if (midPoint > 0 && ( accValue + nodeList[midPoint].value > halfValue ))
+            if (midPoint > 0 && (accValue + nodeList[midPoint].value > halfValue))
                 break;
             accValue += nodeList[midPoint].value;
         }
@@ -190,18 +193,18 @@
         };
     };
 
-    TreeMap.prototype.sumValues = function(nodeList) {
+    TreeMap.prototype.sumValues = function (nodeList) {
         var result = 0;
         var length = nodeList.length;
         for (var i = 0; i < length; i++)
             result += nodeList[i].value;
         return result;
-    };    
+    };
 
-    $.fn.treemap = function(json, options) {
+    $.fn.treemap = function (json, options) {
         var self = this;
-        return this.fadeOut('fast', function() {
-            self.empty().fadeIn('fast', function() {
+        return this.fadeOut('fast', function () {
+            self.empty().fadeIn('fast', function () {
                 new TreeMap(self, options).paint(json);
             });
         });
