@@ -22,7 +22,7 @@
     };
 
     function TreeMap($div, options) {
-        var options = options || {};
+        options = options || {};
         this.$div = $div;
 
         $div.css('position', 'relative');
@@ -43,14 +43,17 @@
         };
         this.ready = function () {
         };
+        this.smallestFontSize = 15;
+        this.startingFontSize = '24px';
+        this.centerLabelVertically = true;
 
         $.extend(this, options);
 
-        this.setNodeColors = function ($box) {
+        this.setNodeColors = function ($box, node) {
             if (this.backgroundColor)
-                $box.css('background-color', this.backgroundColor($box));
+                $box.css('background-color', this.backgroundColor($box, node));
             if (this.color)
-                $box.css('color', this.color($box));
+                $box.css('color', this.color($box, node));
         };
     }
 
@@ -58,7 +61,7 @@
     TreeMap.TOP_MARGIN = 20;
 
     TreeMap.prototype.paint = function (nodeList) {
-        var nodeList = this.squarify(nodeList, this.rectangle);
+        nodeList = this.squarify(nodeList, this.rectangle);
 
         for (var i = 0; i < nodeList.length; i++) {
             var node = nodeList[i];
@@ -69,7 +72,7 @@
                 'position': 'absolute'
             }));
 
-            this.setNodeColors($box);
+            this.setNodeColors($box, node);
 
             $box.addClass('treemap-node');
 
@@ -96,14 +99,15 @@
                 'display': 'inline',
                 'position': 'relative',
                 'text-align': 'center',
-                'font-size': '24px'
+                'font-size': this.startingFontSize
             });
             $box.append($content);
 
             this.fitLabelFontSize($content, node);
 
-            $content.css('margin-top', (parseInt($box.height()) / 2) - (parseInt($content.height()) / 2) + 'px');
-
+            if (this.centerLabelVertically) {
+                $content.css('margin-top', (parseInt($box.height()) / 2) - (parseInt($content.height()) / 2) + 'px');
+            }
         }
         this.ready();
     };
@@ -112,7 +116,7 @@
         var nodeBounds = node.bounds;
         while ($content.height() + TreeMap.TOP_MARGIN > nodeBounds.height || $content.width() + TreeMap.SIDE_MARGIN > nodeBounds.width) {
             var fontSize = parseFloat($content.css('font-size')) - 3;
-            if (fontSize < 15) {
+            if (fontSize < this.smallestFontSize) {
                 $content.remove();
                 break;
             }
