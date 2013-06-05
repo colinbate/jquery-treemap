@@ -92,7 +92,6 @@
             });
 
             $box.appendTo(this.$div);
-            $box.addClass(this.nodeClass(node, $box));
 
             var $content = $("<div>" + node.label + "</div>");
             $content.addClass('treemap-label');
@@ -105,6 +104,8 @@
             $box.append($content);
 
             this.fitLabelFontSize($content, node);
+
+            $box.addClass(this.nodeClass(node, $box));
 
             if (this.centerLabelVertically) {
                 $content.css('margin-top', (parseInt($box.height()) / 2) - (parseInt($content.height()) / 2) + 'px');
